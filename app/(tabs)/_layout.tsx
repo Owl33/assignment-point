@@ -10,7 +10,6 @@ import { HapticTab } from "@/components/HapticTab";
 import { Platform } from "react-native";
 import { Route } from "expo-router/build/Route";
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
   const user = true;
   return (
     <Tabs

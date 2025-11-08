@@ -20,7 +20,7 @@ import {
 import { List } from "@/components/wrapper/List/List";
 import { ListItem } from "@/components/wrapper/List/ListItem";
 import { ScrollView } from "react-native";
-
+import * as Haptics from "expo-haptics";
 export default function TabOneScreen() {
   const [point, setPoint] = useState(1);
   return (
@@ -28,24 +28,28 @@ export default function TabOneScreen() {
       <Box className="p-4">
         <VStack space="xl">
           <Box className="">
-            <Card
-              size="lg"
-              className="">
-              <Text desc>
+            <Card size="lg">
+              <Text
+                desc
+                className="font-semibold">
                 오늘 총
                 <Text
                   bold
-                  className="text-xs text-blue-500">
+                  className="text-sm text-primary-500">
                   {point}
                 </Text>
                 원을 적립했어요!
               </Text>
 
               <Box className="mt-2 flex-row gap-2 items-center">
-                <Box className="bg-blue-300 w-6 h-6 rounded-full flex items-center justify-center">
-                  <Text bold>P</Text>
-                </Box>
                 <Heading>내 포인트</Heading>
+                <Box className="bg-primary-500 w-6 h-6 rounded-full flex items-center justify-center">
+                  <Text
+                    bold
+                    className="text-white">
+                    P
+                  </Text>
+                </Box>
               </Box>
 
               <Box className="mt-2 flex-row items-center cursor-pointer">
@@ -57,9 +61,11 @@ export default function TabOneScreen() {
             </Card>
             <Button
               variant="solid"
-              className="mt-4 rounded-xl data-[active=true]:scale-y-[1.05]"
+              className="mt-4 rounded-xl "
               size="xl"
               onPress={() => {
+                Haptics.selectionAsync();
+
                 setPoint(point + 1);
               }}>
               <ButtonText>포인트 적립</ButtonText>

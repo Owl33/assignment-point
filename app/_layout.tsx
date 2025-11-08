@@ -1,27 +1,24 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import {
-  SafeAreaView,
-  SafeAreaProvider,
-  SafeAreaInsetsContext,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { useColorScheme } from "@/components/useColorScheme";
 
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
+import { configureReanimatedLogger } from "react-native-reanimated";
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
-
+configureReanimatedLogger({
+  strict: false,
+});
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: "(tabs)",
@@ -61,19 +58,21 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <GluestackUIProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen
-            name="(tabs)"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="modal"
-            options={{ presentation: "modal" }}
-          />
-        </Stack>
-      </ThemeProvider>
-    </GluestackUIProvider>
+    <GestureHandlerRootView>
+      <GluestackUIProvider>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+          <Stack>
+            <Stack.Screen
+              name="(tabs)"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="modal"
+              options={{ presentation: "modal" }}
+            />
+          </Stack>
+        </ThemeProvider>
+      </GluestackUIProvider>
+    </GestureHandlerRootView>
   );
 }
