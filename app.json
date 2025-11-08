@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "starter-kit-expo",
-    "slug": "starter-kit-expo",
+    "name": "assignment-point",
+    "slug": "assignment-point",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "starterkitexpo",
+    "scheme": "assignmentpoint",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "bundler": "metro",
@@ -30,9 +31,20 @@
     },
     "plugins": [
       "expo-router",
-      "expo-web-browser",
-      "expo-font"
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/SpoqaHanSansNeo-Thin.ttf",
+            "./assets/fonts/SpoqaHanSansNeo-Light.ttf",
+            "./assets/fonts/SpoqaHanSansNeo-Regular.ttf",
+            "./assets/fonts/SpoqaHanSansNeo-Medium.ttf",
+            "./assets/fonts/SpoqaHanSansNeo-Bold.ttf"
+          ]
+        }
+      ]
     ],
+
     "experiments": {
       "typedRoutes": true
     }
