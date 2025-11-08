@@ -8,6 +8,7 @@ import { Camera } from "lucide-react-native";
 import { HapticTab } from "@/components/HapticTab";
 // import { SpecialTabButton } from "@/components/SpecialTabButton";
 import { Platform } from "react-native";
+
 import { Route } from "expo-router/build/Route";
 export default function TabLayout() {
   const user = true;
@@ -21,8 +22,8 @@ export default function TabLayout() {
         name="index"
         options={{ title: "홈" }}></Tabs.Screen>
       <Tabs.Screen
-        name="dummy1"
-        options={{ title: "더미1" }}></Tabs.Screen>
+        name="history"
+        options={{ title: "내역 조회", headerShown: false }}></Tabs.Screen>
       <Tabs.Protected guard={user}>
         <Tabs.Screen
           name="(auth)/profile"
