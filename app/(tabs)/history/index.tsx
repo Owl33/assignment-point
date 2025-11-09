@@ -1,43 +1,29 @@
-import { StyleSheet } from "react-native";
+//app/(tabs)/history/index.tsx
 
-import { Text } from "@/components/ui/text";
 import { Box } from "@/components/ui/box";
-import { Button, ButtonIcon, ButtonText } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
-import { Icon, ArrowRightIcon, ChevronRightIcon } from "@/components/ui/icon";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import {
-  Sparkle,
-  Sparkles,
-  IceCream,
-  Bus,
-  IndianRupeeIcon,
-  CloudDownload,
-  ClosedCaption,
-} from "lucide-react-native";
+import { BottomSheet, useBottomSheet } from "@/components/wrapper/BottomSheet/index";
 import { List } from "@/components/wrapper/List/List";
 import { ListItem } from "@/components/wrapper/List/ListItem";
-import { ScrollView } from "react-native";
-import { BottomSheetModal, BottomSheetView, BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { Link } from "expo-router";
+import {
+  Bus,
+  IndianRupeeIcon,
+  Sparkle,
+  Sparkles
+} from "lucide-react-native";
+import { useState } from "react";
+import { Pressable, ScrollView } from "react-native";
 
 export default function TabTwoScreen() {
   const [point, setPoint] = useState(1);
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  // callbacks
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index);
-  }, []);
-  const snapPoints = useMemo(() => ["50%"], []);
+  const sheet = useBottomSheet(); // BottomSheet 마운트 후 controller 반환
 
   return (
-    <Box className="h-full">
+    <Box className="flex-1">
       <ScrollView>
         <Box className="p-4">
           <VStack space="xl">
@@ -62,7 +48,9 @@ export default function TabTwoScreen() {
             <VStack space="md">
               <Box className="flex-row justify-between">
                 <Text>총 23건</Text>
-                <Button onPress={handlePresentModalPress}>modal</Button>
+                <Pressable onPress={() => sheet?.present()}>
+                  <Text>최근 3개월</Text>
+                </Pressable>
               </Box>
               <List>
                 <ListItem
@@ -89,30 +77,12 @@ export default function TabTwoScreen() {
             </VStack>
           </VStack>
         </Box>
+        <BottomSheet>
+          <Button onPress={() => sheet?.dismiss()}>
+            <Text>hI</Text>
+          </Button>
+        </BottomSheet>
       </ScrollView>
-      <BottomSheetModalProvider>
-        <BottomSheetModal
-          ref={bottomSheetModalRef}
-          snapPoints={snapPoints}
-          index={0}
-          onChange={handleSheetChanges}>
-          <BottomSheetView style={styles.contentContainer}>
-            <Text>Awesome 🎉</Text>
-          </BottomSheetView>
-        </BottomSheetModal>
-      </BottomSheetModalProvider>
     </Box>
   );
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 24,
-    justifyContent: "center",
-    backgroundColor: "grey",
-  },
-  contentContainer: {
-    flex: 1,
-    alignItems: "center",
-  },
-});
