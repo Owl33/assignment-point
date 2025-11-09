@@ -1,92 +1,67 @@
-import React from "react";
-import { Pressable } from "react-native";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  Easing,
-} from "react-native-reanimated";
+import { MotiView } from "moti";
+import { ReactNode } from "react";
 
 import { Box } from "@/components/ui/box";
+import type { UIIcon } from "@/components/ui/icon";
+import { ChevronRightIcon, Icon } from "@/components/ui/icon";
+import { Pressable } from "@/components/ui/pressable";
 import { Text } from "@/components/ui/text";
-import { Icon } from "@/components/ui/icon";
-import { UIIcon } from "@/components/ui/icon";
 
 interface Props {
-  icon?: typeof UIIcon;
   title: string;
   desc?: string;
+  icon?: typeof UIIcon;
+  append?: ReactNode | string;
+  showChevron?: boolean;
   onPress?: () => void;
 }
 
-export function ListItem({ icon, title, desc, onPress }: Props) {
-  const scale = useSharedValue(1);
-  const overlayOpacity = useSharedValue(0);
+export function ListItem({ title, desc, icon, append, showChevron, onPress }: Props) {
+  const appendNode =
+    typeof append === "string" ? (
+      <Text bold className="text-typography-900">
+        {append}
+      </Text>
+    ) : (
+      append
+    );
 
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const overlayStyle = useAnimatedStyle(() => ({
-    opacity: overlayOpacity.value,
-  }));
-
-  const handlePressIn = () => {
-    scale.value = withTiming(0.985, {
-      duration: 150,
-      easing: Easing.out(Easing.quad),
-    });
-    overlayOpacity.value = withTiming(0.12, {
-      duration: 150,
-      easing: Easing.out(Easing.quad),
-    });
-  };
-
-  const handlePressOut = () => {
-    scale.value = withTiming(1, {
-      duration: 150,
-      easing: Easing.out(Easing.quad),
-    });
-    overlayOpacity.value = withTiming(0, {
-      duration: 150,
-      easing: Easing.out(Easing.quad),
-    });
-  };
+  const shouldShowChevron = showChevron === undefined ? !append : showChevron;
 
   return (
-    <Pressable
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={onPress}>
-      <Animated.View
-        className="flex-row items-center gap-6 px-4 py-4 rounded-xl bg-transparent"
-        style={[animatedStyle, { overflow: "hidden" }]}>
-        {icon && (
-          <Icon
-            as={icon}
-            className="w-10 h-10"
-          />
-        )}
-        <Box className="flex-1">
-          <Text size="lg">{title}</Text>
-          {desc && <Text desc>{desc}</Text>}
-        </Box>
+    <Pressable onPress={onPress} >
+      {({ pressed }) => (
+        <MotiView
+          animate={{ scale: pressed ? 0.985 : 1, opacity: pressed ? 0.97 : 1 }}
+          transition={{ type: "timing", duration: 120 }}
+          style={{ borderRadius: 18, overflow: "hidden" }}
+        >
+          <Box
+            className={`flex-row items-center gap-4 py-3 px-4 ${
+              pressed ? "bg-background-100" : "bg-transparent"
+            }`}
+          >
+            {icon && <Icon as={icon} className="" />}
+            <Box className="flex-1">
+              <Text size="lg" className="font-semibold">
+                {title}
+              </Text>
+              {desc && (
+                <Text desc className=" mt-0.5">
+                  {desc}
+                </Text>
+              )}
+            </Box>
 
-        <Animated.View
-          pointerEvents="none"
-          style={[
-            {
-              position: "absolute",
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
-              backgroundColor: "#000",
-            },
-            overlayStyle,
-          ]}
-        />
-      </Animated.View>
+            <Box className="flex-row items-center gap-2">
+              {appendNode}
+              {shouldShowChevron && (
+                <Icon as={ChevronRightIcon} size="sm" className="text-typography-400" />
+              )}
+            </Box>
+          </Box>
+        </MotiView>
+      )}
     </Pressable>
   );
 }

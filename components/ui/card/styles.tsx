@@ -1,12 +1,11 @@
-import { tva } from "@gluestack-ui/utils/nativewind-utils";
-import { isWeb } from "@gluestack-ui/utils/nativewind-utils";
+import { isWeb, tva } from "@gluestack-ui/utils/nativewind-utils";
 const baseStyle = isWeb ? "flex flex-col relative z-0" : "";
 
 export const cardStyle = tva({
   base: baseStyle,
   variants: {
     size: {
-      sm: "p-3 rounded",
+      sm: "p-3 rounded-xl",
       md: "p-4 rounded-xl",
       lg: "p-6 rounded-2xl",
     },

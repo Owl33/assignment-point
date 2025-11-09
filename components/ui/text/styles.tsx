@@ -45,7 +45,7 @@ export const textStyle = tva({
       true: "bg-yellow-500",
     },
     desc: {
-      true: `text-sm font-thin text-typography-700`,
+      true: `text-sm text-typography-500`,
     },
   },
 });
