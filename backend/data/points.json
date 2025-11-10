@@ -5,17 +5,38 @@
       "email": "demo@asd.com",
       "password": "1234",
       "name": "데모",
-      "refreshTokenHash": "$2b$10$nZj/yG3qUKmZAolbXXm6G.mzu7DK5gjee42Xefs1PEktJyHqkpxae",
-      "sessionStartedAt": "2025-11-10T13:28:34.979Z"
+      "refreshTokenHash": "$2b$10$hpnOJzq5ya5vKc/ak8UwNOQwgi4hHl3HkYyfakgTSshwrMR9g5PSm",
+      "sessionStartedAt": "2025-11-10T13:53:22.531Z"
     }
   ],
   "balances": [
     {
       "userId": 1,
-      "amount": 130600
+      "amount": 130900
     }
   ],
   "history": [
+    {
+      "userId": 1,
+      "type": "earn",
+      "amount": 100,
+      "description": "홈 화면 버튼 적립",
+      "createdAt": "2025-11-10T13:51:21.289Z"
+    },
+    {
+      "userId": 1,
+      "type": "earn",
+      "amount": 100,
+      "description": "홈 화면 버튼 적립",
+      "createdAt": "2025-11-10T13:51:16.090Z"
+    },
+    {
+      "userId": 1,
+      "type": "earn",
+      "amount": 100,
+      "description": "홈 화면 버튼 적립",
+      "createdAt": "2025-11-10T13:51:14.455Z"
+    },
     {
       "userId": 1,
       "type": "earn",
