@@ -1,6 +1,12 @@
 import axios, { AxiosError, AxiosRequestConfig, type AxiosRequestHeaders } from 'axios';
+import { Platform } from 'react-native';
 
-const baseURL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:8080';
+const FALLBACK_BASE_URL = Platform.select({
+  android: 'http://10.0.2.2:8080',
+  default: 'http://localhost:8080',
+});
+
+const baseURL =  FALLBACK_BASE_URL ?? 'http://localhost:8080';
 
 export const api = axios.create({
   baseURL,

@@ -6,9 +6,9 @@ type TokenBundle = {
   sessionExpiresAt?: string | null;
 };
 
-const ACCESS_TOKEN_KEY = 'assignment-point/access';
-const REFRESH_TOKEN_KEY = 'assignment-point/refresh';
-const SESSION_EXPIRES_KEY = 'assignment-point/session-expires';
+const ACCESS_TOKEN_KEY = 'assignment_point_access';
+const REFRESH_TOKEN_KEY = 'assignment_point_refresh';
+const SESSION_EXPIRES_KEY = 'assignment_point_session_expires';
 const memoryStore: Record<string, string | null> = {};
 
 async function isSecureStoreAvailable() {

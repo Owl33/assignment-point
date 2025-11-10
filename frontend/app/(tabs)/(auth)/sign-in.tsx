@@ -19,7 +19,7 @@ export default function SignInScreen() {
 
   useEffect(() => {
     if (status === 'authenticated' && user) {
-      router.replace('/(tabs)/(auth)/profile' );
+      router.navigate('/(tabs)/(auth)/profile');
     }
   }, [router, status, user]);
 
@@ -31,7 +31,7 @@ export default function SignInScreen() {
     try {
       setPending(true);
       await login({ email, password });
-      router.replace('/(tabs)/(auth)/profile' );
+      router.navigate('/(tabs)/(auth)/profile');
     } catch (error) {
       Alert.alert('로그인 실패');
     } finally {
@@ -67,4 +67,3 @@ export default function SignInScreen() {
     </Box>
   );
 }
-
