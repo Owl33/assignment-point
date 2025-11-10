@@ -1,5 +1,6 @@
-import { MotiView } from "moti";
+import { Motion } from "@legendapp/motion";
 import { ReactNode } from "react";
+import { Platform } from "react-native";
 
 import { Box } from "@/components/ui/box";
 import type { UIIcon } from "@/components/ui/icon";
@@ -27,12 +28,13 @@ export function ListItem({ title, desc, icon, append, showChevron, onPress }: Pr
     );
 
   const shouldShowChevron = showChevron === undefined ? !append : showChevron;
+  const pressScale = Platform.OS === "web" ? 0.995 : 0.97;
 
   return (
     <Pressable onPress={onPress} >
       {({ pressed }) => (
-        <MotiView
-          animate={{ scale: pressed ? 0.985 : 1, opacity: pressed ? 0.97 : 1 }}
+        <Motion.View
+          animate={{ scale: pressed ? pressScale : 1, opacity: pressed ? 0.97 : 1 }}
           transition={{ type: "timing", duration: 120 }}
           style={{ borderRadius: 18, overflow: "hidden" }}
         >
@@ -60,7 +62,7 @@ export function ListItem({ title, desc, icon, append, showChevron, onPress }: Pr
               )}
             </Box>
           </Box>
-        </MotiView>
+        </Motion.View>
       )}
     </Pressable>
   );

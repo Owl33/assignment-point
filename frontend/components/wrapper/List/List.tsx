@@ -60,6 +60,7 @@ export function List({
 
   return (
     <VStack space={space} className={className}>
+      
       {hasHeader && titlePlacement === "out" && <Header />}
       <Card
   size="sm"
@@ -69,7 +70,10 @@ export function List({
           {hasHeader && titlePlacement === "in" && (
               <Header />
           )}
+          <VStack space="sm">
+
           {children}
+          </VStack>
       </Card>
     </VStack>
   );
