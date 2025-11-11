@@ -43,10 +43,25 @@
             "./assets/fonts/SpoqaHanSansNeo-Bold.ttf"
           ]
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
+
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d753d771-513a-4ade-92ec-7ae90227f1de"
+      }
     }
   }
 }
