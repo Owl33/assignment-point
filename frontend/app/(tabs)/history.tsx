@@ -22,7 +22,7 @@ const date = [
   { label: "최근 6개월", value: "6" },
 ] as const;
 
-type PointHistoryEntry = {
+interface PointHistoryEntry = {
   userId: number;
   type: "earn" | "spend";
   amount: number;
@@ -30,7 +30,7 @@ type PointHistoryEntry = {
   createdAt: string;
 };
 
-type HistorySection = {
+interface HistorySection = {
   key: string;
   title: string;
   total: number;
