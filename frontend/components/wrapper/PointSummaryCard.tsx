@@ -4,6 +4,7 @@ import { Box } from "@/components/ui/box";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { useAuthStore } from "@/store/auth";
 
 interface StatBoxProps {
   label: string;
@@ -23,13 +24,16 @@ export function PointSummaryCard({
 
   footer,
 }: PointSummaryCardProps) {
+  const user = useAuthStore((state) => state.user);
+  const displayValue = user ? `${totalPoint.toLocaleString("ko-KR")}P` : "???";
+
   return (
     <Card size="lg">
       <Text desc className="text-typography-500">
         {title}
       </Text>
       <Heading size="xl" className="mt-1">
-        {totalPoint.toLocaleString("ko-KR")}P
+        {displayValue}
       </Heading>
   
       {footer && <Box className="mt-4">{footer}</Box>}
