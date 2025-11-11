@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { compare, hash } from 'bcrypt';
 import { getStore, saveStore, type StoredUser } from '../store';
@@ -6,6 +6,7 @@ import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   private readonly refreshSecret = process.env.JWT_REFRESH_SECRET!;
   private readonly refreshExpires = Number(process.env.JWT_REFRESH_EXPIRES!);
   private readonly sessionExpiresMs = Number(process.env.SESSION_EXPIRES!) * 1000;
@@ -13,21 +14,25 @@ export class AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
   async login(loginDto: LoginDto) {
+    this.logger.log(`로그인 ${loginDto.email}`);
     const user = this.validateUser(loginDto.email, loginDto.password);
     if (!user) {
-      throw new UnauthorizedException('이메일 또는 비밀번호가 올바르지 않습니다.');
+      this.logger.warn(`로그인실패 ${loginDto.email}`);
+      throw new UnauthorizedException();
     }
 
     this.startSession(user);
     const tokens = this.createTokenPair(user);
     await this.storeRefreshToken(user, tokens.refreshToken);
     saveStore();
+    this.logger.log(`로그인성공 ${loginDto.email}`);
     return this.buildAuthResponse(user, tokens);
   }
 
   async refresh(refreshToken: string) {
     if (!refreshToken) {
-      throw new UnauthorizedException('리프레쉬 없음');
+      this.logger.warn('리프레쉬 실패');
+      throw new UnauthorizedException();
     }
 
     try {
@@ -36,24 +41,28 @@ export class AuthService {
       });
       const user = this.findUserById(payload.sub);
       if (!user) {
-        throw new UnauthorizedException('사용자 없음');
+        this.logger.warn(`리프레쉬 실패 ${payload.sub}`);
+        throw new UnauthorizedException();
       }
       await this.verifyRefreshToken(refreshToken, user);
       this.ensureSessionActive(user);
       const tokens = this.createTokenPair(user);
       await this.storeRefreshToken(user, tokens.refreshToken);
       saveStore();
+      this.logger.log(`리프레쉬 성공 ${user.id}`);
       return this.buildAuthResponse(user, tokens);
     } catch (error) {
       if (error instanceof UnauthorizedException) {
         throw error;
       }
-      throw new UnauthorizedException('리프레쉬 검증 실패');
+      this.logger.error('리프레쉬 실패 토큰만료');
+      throw new UnauthorizedException();
     }
   }
 
   async logout(refreshToken: string) {
     if (!refreshToken) {
+      this.logger.log('로그아웃 ');
       return { success: true };
     }
 
@@ -62,6 +71,9 @@ export class AuthService {
       user.refreshTokenHash = null;
       user.sessionStartedAt = null;
       saveStore();
+      this.logger.log(`로그아웃성공 ${user.id}`);
+    } else {
+      this.logger.warn('로그아웃 실패');
     }
     return { success: true };
   }
@@ -100,11 +112,13 @@ export class AuthService {
 
   private async verifyRefreshToken(refreshToken: string, user: StoredUser) {
     if (!user.refreshTokenHash) {
-      throw new UnauthorizedException('리프레쉬 만료');
+      this.logger.warn(`리프레쉬만료 ${user.id}`);
+      throw new UnauthorizedException();
     }
     const matches = await compare(refreshToken, user.refreshTokenHash);
     if (!matches) {
-      throw new UnauthorizedException('리프레쉬 다름');
+      this.logger.warn(`리프레쉬다름 ${user.id}`);
+      throw new UnauthorizedException();
     }
   }
 
@@ -135,7 +149,8 @@ export class AuthService {
       user.sessionStartedAt = null;
       user.refreshTokenHash = null;
       saveStore();
-      throw new UnauthorizedException('세션 만료');
+      this.logger.warn(`세션만료 ${user.id}`);
+      throw new UnauthorizedException();
     }
     return expiresAt;
   }

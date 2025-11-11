@@ -1,12 +1,12 @@
 import axios, { AxiosError, AxiosRequestConfig, type AxiosRequestHeaders } from 'axios';
 import { Platform } from 'react-native';
+import Constants from 'expo-constants';
 
-const FALLBACK_BASE_URL = Platform.select({
-  android: 'http://10.0.2.2:8080',
-  default: 'http://localhost:8080',
-});
+const host = Constants.expoConfig?.hostUri?.split(':')[0];
 
-const baseURL =  FALLBACK_BASE_URL ?? 'http://localhost:8080';
+export const baseURL = host
+  ? `http://${host}:8080`
+  : (Platform.OS === 'android' ? 'http://10.0.2.2:8080' : 'http://localhost:8080');
 
 export const api = axios.create({
   baseURL,
@@ -69,3 +69,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+

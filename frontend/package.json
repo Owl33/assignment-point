@@ -3,10 +3,10 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start --port 3000",
-    "android": "expo start --android --port 3000",
-    "ios": "expo start --ios --port 3000",
-    "web": "expo start --web --web-port 3000"
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web"
   },
   "dependencies": {
     "@expo/html-elements": "^0.10.1",
@@ -32,7 +32,6 @@
     "expo-web-browser": "~15.0.9",
     "jwt-decode": "^4.0.0",
     "lucide-react-native": "^0.553.0",
-    "moti": "^0.30.0",
     "nativewind": "^4.1.23",
     "react": "19.1.0",
     "react-aria": "^3.33.0",
