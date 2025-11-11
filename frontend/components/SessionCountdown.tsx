@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/store/auth";
-import { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { Text } from "react-native";
 import { Box } from "./ui/box";
 
 type Remaining = {
@@ -14,35 +14,17 @@ export function SessionCountdown() {
   const accessExpiresAt = useAuthStore((state) => state.accessTokenExpiresAt);
   const refreshExpiresAt = useAuthStore((state) => state.refreshTokenExpiresAt);
   const sessionExpiresAt = useAuthStore((state) => state.sessionExpiresAt);
-  const [remaining, setRemaining] = useState<Remaining>({
-    access: null,
-    refresh: null,
-    session: null,
-  });
-
-  useEffect(() => {
-    if (status !== "authenticated") {
-      setRemaining({ access: null, refresh: null, session: null });
-      return;
-    }
-
-    const tick = () => {
-      setRemaining({
-        access: calcRemaining(accessExpiresAt),
-        refresh: calcRemaining(refreshExpiresAt),
-        session: calcRemaining(sessionExpiresAt),
-      });
-    };
-
-    tick();
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
-  }, [accessExpiresAt, refreshExpiresAt, sessionExpiresAt, status]);
+  const now = useSharedNowTicker(status === "authenticated");
 
   if (status !== "authenticated") {
     return null;
   }
 
+  const remaining: Remaining = {
+    access: calcRemaining(accessExpiresAt, now),
+    refresh: calcRemaining(refreshExpiresAt, now),
+    session: calcRemaining(sessionExpiresAt, now),
+  };
 
   return (
     <Box className="flex-row gap-4">
@@ -53,9 +35,45 @@ export function SessionCountdown() {
   );
 }
 
-function calcRemaining(expiresAt: number | null) {
+function calcRemaining(expiresAt: number | null, now: number) {
   if (!expiresAt) {
     return null;
   }
-  return Math.max(0, Math.floor((expiresAt - Date.now()) / 1000));
+  return Math.max(0, Math.floor((expiresAt - now) / 1000));
+}
+
+type NowListener = Dispatch<SetStateAction<number>>;
+const nowListeners = new Set<NowListener>();
+let nowInterval: ReturnType<typeof setInterval> | null = null;
+
+function subscribeNow(listener: NowListener) {
+  nowListeners.add(listener);
+  if (!nowInterval) {
+    nowInterval = setInterval(() => {
+      const current = Date.now();
+      nowListeners.forEach((notify) => notify(current));
+    }, 1000);
+  }
+  return () => {
+    nowListeners.delete(listener);
+    if (nowListeners.size === 0 && nowInterval) {
+      clearInterval(nowInterval);
+      nowInterval = null;
+    }
+  };
+}
+
+function useSharedNowTicker(active: boolean) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!active) {
+      return;
+    }
+
+    setNow(Date.now());
+    return subscribeNow(setNow);
+  }, [active]);
+
+  return now;
 }
